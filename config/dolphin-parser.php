@@ -3,10 +3,10 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Dolphin Parser API Configuration
+    | Dolphin Parsers API Configuration
     |--------------------------------------------------------------------------
     |
-    | Configure your Dolphin PDF Parser RunPod endpoint credentials here.
+    | Configure your Dolphin PDF Parsers RunPod endpoint credentials here.
     |
     */
 

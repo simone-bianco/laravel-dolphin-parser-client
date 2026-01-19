@@ -5,7 +5,7 @@ namespace SimoneBianco\DolphinParser\Exceptions;
 use Exception;
 
 /**
- * Base exception for Dolphin Parser errors.
+ * Base exception for Dolphin Parsers errors.
  */
 class DolphinParserException extends Exception
 {

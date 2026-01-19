@@ -11,15 +11,15 @@ use SimoneBianco\DolphinParser\Exceptions\ApiRequestException;
 use SimoneBianco\DolphinParser\Exceptions\ConfigurationException;
 
 /**
- * Dolphin PDF Parser Client for Laravel.
- * 
+ * Dolphin PDF Parsers Client for Laravel.
+ *
  * @example
  * // Parse a PDF file
  * $result = DolphinParser::parseFile('/path/to/file.pdf');
- * 
+ *
  * // Parse base64 content
  * $result = DolphinParser::parse($base64Content);
- * 
+ *
  * // Check job status
  * $status = DolphinParser::status($jobId);
  */
@@ -48,7 +48,7 @@ class DolphinParserClient
         $this->callbackUrl = $config['callback_url'] ?? config('dolphin-parser.callback_url');
         $this->storageDisk = $config['storage_disk'] ?? config('dolphin-parser.storage_disk', 'local');
         $this->storagePath = $config['storage_path'] ?? config('dolphin-parser.storage_path', 'dolphin-parser');
-        
+
         $this->validateConfiguration();
     }
 
@@ -63,10 +63,10 @@ class DolphinParserClient
     public function parse(string $base64Content, array $options = []): ParseJobResponse
     {
         $payload = $this->buildPayload($base64Content, $options);
-        
+
         $response = $this->request()
             ->post("{$this->endpoint}/runsync", ['input' => $payload]);
-        
+
         return $this->handleResponse($response);
     }
 
@@ -82,10 +82,10 @@ class DolphinParserClient
     public function parseAsync(string $base64Content, array $options = []): ParseJobResponse
     {
         $payload = $this->buildPayload($base64Content, $options);
-        
+
         $response = $this->request()
             ->post("{$this->endpoint}/run", ['input' => $payload]);
-        
+
         return $this->handleResponse($response);
     }
 
@@ -100,7 +100,7 @@ class DolphinParserClient
     {
         $content = file_get_contents($filePath);
         $base64 = base64_encode($content);
-        
+
         return $this->parse($base64, $options);
     }
 
@@ -115,7 +115,7 @@ class DolphinParserClient
     {
         $content = file_get_contents($filePath);
         $base64 = base64_encode($content);
-        
+
         return $this->parseAsync($base64, $options);
     }
 
@@ -130,7 +130,7 @@ class DolphinParserClient
     {
         $response = $this->request()
             ->get("{$this->endpoint}/status/{$jobId}");
-        
+
         return $this->handleResponse($response);
     }
 
@@ -147,7 +147,7 @@ class DolphinParserClient
             ->post("{$this->endpoint}/runsync", [
                 'input' => ['action' => 'stop_job', 'job_id' => $jobId]
             ]);
-        
+
         return $response->json();
     }
 
@@ -163,7 +163,7 @@ class DolphinParserClient
             ->post("{$this->endpoint}/runsync", [
                 'input' => ['action' => 'health']
             ]);
-        
+
         return $response->json('output', []);
     }
 
@@ -179,7 +179,7 @@ class DolphinParserClient
             ->post("{$this->endpoint}/runsync", [
                 'input' => ['action' => 'check_storage']
             ]);
-        
+
         return $response->json('output', []);
     }
 
@@ -195,7 +195,7 @@ class DolphinParserClient
             ->post("{$this->endpoint}/runsync", [
                 'input' => ['action' => 'stats']
             ]);
-        
+
         return $response->json('output', []);
     }
 
@@ -212,7 +212,7 @@ class DolphinParserClient
             ->post("{$this->endpoint}/runsync", [
                 'input' => array_merge(['action' => 'list_jobs'], $options)
             ]);
-        
+
         return $response->json('output', []);
     }
 
@@ -229,7 +229,7 @@ class DolphinParserClient
             ->post("{$this->endpoint}/runsync", [
                 'input' => ['action' => 'get_result', 'job_id' => $jobId]
             ]);
-        
+
         return $response->json('output', []);
     }
 
@@ -245,30 +245,30 @@ class DolphinParserClient
     {
         $storageEndpoint = config('dolphin-parser.storage_server.endpoint');
         $storageApiKey = config('dolphin-parser.storage_server.api_key');
-        
+
         if (empty($storageEndpoint)) {
             throw ApiRequestException::requestFailed('Storage server not configured');
         }
-        
+
         $baseUrl = str_replace('/upload', '', $storageEndpoint);
         $url = "{$baseUrl}/download/{$jobId}" . ($keep ? '?keep=true' : '');
-        
+
         $response = Http::withHeaders(['X-API-Key' => $storageApiKey])
             ->timeout($this->timeout)
             ->get($url);
-        
+
         if (!$response->successful()) {
             throw ApiRequestException::requestFailed(
                 "Failed to download from storage: {$response->status()}",
                 $response->json()
             );
         }
-        
+
         $filename = "{$jobId}.zip";
         $path = "{$this->storagePath}/{$filename}";
-        
+
         Storage::disk($this->storageDisk)->put($path, $response->body());
-        
+
         return Storage::disk($this->storageDisk)->path($path);
     }
 
@@ -306,7 +306,7 @@ class DolphinParserClient
                 $response->json()
             );
         }
-        
+
         return ParseJobResponse::fromResponse($response->json());
     }
 
@@ -318,7 +318,7 @@ class DolphinParserClient
         if (empty($this->endpoint)) {
             throw ConfigurationException::missingEndpoint();
         }
-        
+
         if (empty($this->apiKey)) {
             throw ConfigurationException::missingApiKey();
         }

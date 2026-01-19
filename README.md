@@ -355,14 +355,14 @@ try {
     $result = DolphinParser::parseFile('/path/to/file.pdf');
 } catch (ConfigurationException $e) {
     // Missing endpoint or API key
-    Log::error('Parser not configured: ' . $e->getMessage());
+    Log::error('Parsers not configured: ' . $e->getMessage());
 } catch (ApiRequestException $e) {
     // API request failed
     Log::error('API error: ' . $e->getMessage());
     $response = $e->getResponse(); // Get raw response if available
 } catch (DolphinParserException $e) {
     // Generic parser error
-    Log::error('Parser error: ' . $e->getMessage());
+    Log::error('Parsers error: ' . $e->getMessage());
 }
 ```
 
