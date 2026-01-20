@@ -95,6 +95,7 @@ class DolphinParserClient
      * @param string $filePath Path to PDF file
      * @param array $options Additional options
      * @return ParseJobResponse
+     * @throws ApiRequestException
      */
     public function parseFile(string $filePath, array $options = []): ParseJobResponse
     {
@@ -110,6 +111,7 @@ class DolphinParserClient
      * @param string $filePath Path to PDF file
      * @param array $options Additional options
      * @return ParseJobResponse
+     * @throws ApiRequestException
      */
     public function parseFileAsync(string $filePath, array $options = []): ParseJobResponse
     {
