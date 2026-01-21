@@ -2,6 +2,7 @@
 
 namespace SimoneBianco\DolphinParser;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -59,6 +60,7 @@ class DolphinParserClient
      * @param array $options Additional options (excluded_labels, excluded_tags, callback)
      * @return ParseJobResponse
      * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function parse(string $base64Content, array $options = []): ParseJobResponse
     {
@@ -78,6 +80,7 @@ class DolphinParserClient
      * @param array $options Additional options
      * @return ParseJobResponse
      * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function parseAsync(string $base64Content, array $options = []): ParseJobResponse
     {
@@ -96,6 +99,7 @@ class DolphinParserClient
      * @param array $options Additional options
      * @return ParseJobResponse
      * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function parseFile(string $filePath, array $options = []): ParseJobResponse
     {
@@ -112,6 +116,7 @@ class DolphinParserClient
      * @param array $options Additional options
      * @return ParseJobResponse
      * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function parseFileAsync(string $filePath, array $options = []): ParseJobResponse
     {
@@ -127,6 +132,7 @@ class DolphinParserClient
      * @param string $jobId Job identifier
      * @return ParseJobResponse
      * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function status(string $jobId): ParseJobResponse
     {
@@ -141,7 +147,7 @@ class DolphinParserClient
      *
      * @param string $jobId Job identifier
      * @return array
-     * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function cancel(string $jobId): array
     {
@@ -157,7 +163,7 @@ class DolphinParserClient
      * Get parser health status.
      *
      * @return array
-     * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function health(): array
     {
@@ -173,7 +179,7 @@ class DolphinParserClient
      * Check storage server connectivity.
      *
      * @return array
-     * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function checkStorage(): array
     {
@@ -189,7 +195,7 @@ class DolphinParserClient
      * Get parser statistics.
      *
      * @return array
-     * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function stats(): array
     {
@@ -206,7 +212,7 @@ class DolphinParserClient
      *
      * @param array $options (statuses, limit, offset)
      * @return array
-     * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function listJobs(array $options = []): array
     {
@@ -223,7 +229,7 @@ class DolphinParserClient
      *
      * @param string $jobId Job identifier
      * @return array
-     * @throws ApiRequestException
+     * @throws ConnectionException
      */
     public function getResult(string $jobId): array
     {
@@ -241,6 +247,7 @@ class DolphinParserClient
      * @param string $jobId Job identifier
      * @param bool $keep Keep file on storage server after download
      * @return string Local path to downloaded file
+     * @throws ConnectionException
      * @throws ApiRequestException
      */
     public function downloadFromStorage(string $jobId, bool $keep = false): string
@@ -299,6 +306,7 @@ class DolphinParserClient
 
     /**
      * Handle API response.
+     * @throws ApiRequestException
      */
     protected function handleResponse(Response $response): ParseJobResponse
     {
@@ -314,6 +322,7 @@ class DolphinParserClient
 
     /**
      * Validate configuration.
+     * @throws ConfigurationException
      */
     protected function validateConfiguration(): void
     {
