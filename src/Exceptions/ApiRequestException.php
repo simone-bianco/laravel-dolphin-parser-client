@@ -2,9 +2,6 @@
 
 namespace SimoneBianco\DolphinParser\Exceptions;
 
-/**
- * Exception thrown when API request fails.
- */
 class ApiRequestException extends DolphinParserException
 {
     public static function requestFailed(string $message, ?array $response = null): self

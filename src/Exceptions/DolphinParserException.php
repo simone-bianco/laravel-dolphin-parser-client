@@ -3,24 +3,19 @@
 namespace SimoneBianco\DolphinParser\Exceptions;
 
 use Exception;
+use Throwable;
 
-/**
- * Base exception for Dolphin Parsers errors.
- */
 class DolphinParserException extends Exception
 {
     public function __construct(
-        string $message = '',
-        int $code = 0,
-        ?\Throwable $previous = null,
+        string                 $message = '',
+        int                    $code = 0,
+        ?Throwable             $previous = null,
         public readonly ?array $response = null
     ) {
         parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * Get the API response if available.
-     */
     public function getResponse(): ?array
     {
         return $this->response;

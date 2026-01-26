@@ -1,5 +1,5 @@
 {
-    "name": "simonebianco/laravel-dolphin-parser",
+    "name": "simone-bianco/laravel-dolphin-parser",
     "description": "Laravel client for Dolphin PDF Parser - Extract text, tables, and figures from PDFs using AI",
     "keywords": ["laravel", "pdf", "parser", "dolphin", "ocr", "document", "ai"],
     "license": "MIT",
