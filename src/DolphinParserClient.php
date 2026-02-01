@@ -37,6 +37,9 @@ class DolphinParserClient
     protected string $storageDisk;
     protected string $storagePath;
 
+    /**
+     * @throws ConfigurationException
+     */
     public function __construct(array $config = [])
     {
         $this->endpoint = $config['endpoint'] ?? config('dolphin-parser.endpoint', '');
@@ -317,7 +320,16 @@ class DolphinParserClient
             );
         }
 
-        return ParseJobResponse::fromResponse($response->json());
+        $response = ParseJobResponse::fromResponse($response->json());
+
+        if (!$response->jobId || $response->isFailed()) {
+            throw new ApiRequestException(
+                message: "Parsing dispatch failed: $response->error",
+                response: $response->toArray(),
+            );
+        }
+
+        return $response;
     }
 
     /**
