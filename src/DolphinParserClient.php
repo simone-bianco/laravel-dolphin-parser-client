@@ -342,7 +342,7 @@ class DolphinParserClient
             throw ConfigurationException::missingEndpoint();
         }
 
-        if (empty($this->apiKey)) {
+        if (empty($this->apiKey) && !str_contains($this->endpoint, 'localhost') && !str_contains($this->endpoint, '127.0.0.1')) {
             throw ConfigurationException::missingApiKey();
         }
     }
