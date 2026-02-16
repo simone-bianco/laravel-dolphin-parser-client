@@ -20,18 +20,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Request Defaults
-    |--------------------------------------------------------------------------
-    */
-
-    // Default labels to exclude from parsing
-    'excluded_labels' => explode(',', env('DOLPHIN_PARSER_EXCLUDED_LABELS', 'foot,header')),
-
-    // Default tags to exclude from parsing
-    'excluded_tags' => explode(',', env('DOLPHIN_PARSER_EXCLUDED_TAGS', 'author,meta_pub_date')),
-
-    /*
-    |--------------------------------------------------------------------------
     | Callback Configuration
     |--------------------------------------------------------------------------
     |

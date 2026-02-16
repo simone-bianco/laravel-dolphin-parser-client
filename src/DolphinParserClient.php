@@ -47,8 +47,6 @@ class DolphinParserClient
         $this->timeout = $config['timeout'] ?? config('dolphin-parser.timeout', 300);
         $this->retries = $config['retries'] ?? config('dolphin-parser.retries', 3);
         $this->retryDelay = $config['retry_delay'] ?? config('dolphin-parser.retry_delay', 2);
-        $this->excludedLabels = $config['excluded_labels'] ?? config('dolphin-parser.excluded_labels', ['foot', 'header']);
-        $this->excludedTags = $config['excluded_tags'] ?? config('dolphin-parser.excluded_tags', ['author', 'meta_pub_date']);
         $this->callbackUrl = $config['callback_url'] ?? config('dolphin-parser.callback_url');
         $this->storageDisk = $config['storage_disk'] ?? config('dolphin-parser.storage_disk', 'local');
         $this->storagePath = $config['storage_path'] ?? config('dolphin-parser.storage_path', 'dolphin-parser');
@@ -60,7 +58,7 @@ class DolphinParserClient
      * Parse a PDF from base64 content (synchronous).
      *
      * @param string $base64Content Base64 encoded PDF
-     * @param array $options Additional options (excluded_labels, excluded_tags, callback)
+     * @param array $options Additional options (callback)
      * @return ParseJobResponse
      * @throws ApiRequestException
      * @throws ConnectionException
@@ -72,7 +70,7 @@ class DolphinParserClient
         $response = $this->request()
             ->post("{$this->endpoint}/runsync", ['input' => $payload]);
 
-        return $this->handleResponse($response);
+        return $this->handleResponse($response, requireJobId: true);
     }
 
     /**
@@ -92,7 +90,7 @@ class DolphinParserClient
         $response = $this->request()
             ->post("{$this->endpoint}/run", ['input' => $payload]);
 
-        return $this->handleResponse($response);
+        return $this->handleResponse($response, requireJobId: true);
     }
 
     /**
@@ -291,8 +289,6 @@ class DolphinParserClient
     {
         return [
             'pdf_base64' => $base64Content,
-            'excluded_labels' => $options['excluded_labels'] ?? $this->excludedLabels,
-            'excluded_tags' => $options['excluded_tags'] ?? $this->excludedTags,
             'callback' => $options['callback'] ?? $this->callbackUrl,
         ];
     }
@@ -311,7 +307,7 @@ class DolphinParserClient
      * Handle API response.
      * @throws ApiRequestException
      */
-    protected function handleResponse(Response $response): ParseJobResponse
+    protected function handleResponse(Response $response, bool $requireJobId = false): ParseJobResponse
     {
         if (!$response->successful()) {
             throw ApiRequestException::requestFailed(
@@ -320,16 +316,23 @@ class DolphinParserClient
             );
         }
 
-        $response = ParseJobResponse::fromResponse($response->json());
+        $parsed = ParseJobResponse::fromResponse($response->json());
 
-        if (!$response->jobId || $response->isFailed()) {
+        if ($parsed->isFailed()) {
             throw new ApiRequestException(
-                message: "Parsing dispatch failed: $response->error",
-                response: $response->toArray(),
+                message: "Parsing failed: $parsed->error",
+                response: $parsed->toArray(),
             );
         }
 
-        return $response;
+        if ($requireJobId && !$parsed->jobId) {
+            throw new ApiRequestException(
+                message: "Parsing dispatch failed: no job ID returned",
+                response: $parsed->toArray(),
+            );
+        }
+
+        return $parsed;
     }
 
     /**
@@ -356,8 +359,6 @@ class DolphinParserClient
             'endpoint' => $this->endpoint,
             'timeout' => $this->timeout,
             'retries' => $this->retries,
-            'excluded_labels' => $this->excludedLabels,
-            'excluded_tags' => $this->excludedTags,
             'callback_url' => $this->callbackUrl,
         ];
     }

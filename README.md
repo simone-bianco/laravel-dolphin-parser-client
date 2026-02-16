@@ -109,8 +109,6 @@ Parse a PDF from base64 content synchronously.
 
 ```php
 $result = DolphinParser::parse($base64, [
-    'excluded_labels' => ['foot', 'header'],
-    'excluded_tags' => ['author'],
     'callback' => 'https://my-app.com/webhook',
 ]);
 ```
@@ -334,8 +332,6 @@ public function handlePdfParsed(Request $request)
 | `timeout`                 | `DOLPHIN_PARSER_TIMEOUT`         | `300`                  | Request timeout (seconds) |
 | `retries`                 | `DOLPHIN_PARSER_RETRIES`         | `3`                    | Retry attempts            |
 | `retry_delay`             | `DOLPHIN_PARSER_RETRY_DELAY`     | `2`                    | Delay between retries     |
-| `excluded_labels`         | `DOLPHIN_PARSER_EXCLUDED_LABELS` | `foot,header`          | Labels to exclude         |
-| `excluded_tags`           | `DOLPHIN_PARSER_EXCLUDED_TAGS`   | `author,meta_pub_date` | Tags to exclude           |
 | `callback_url`            | `DOLPHIN_PARSER_CALLBACK_URL`    | `null`                 | Webhook URL for results   |
 | `storage_disk`            | `DOLPHIN_PARSER_STORAGE_DISK`    | `local`                | Laravel storage disk      |
 | `storage_path`            | `DOLPHIN_PARSER_STORAGE_PATH`    | `dolphin-parser`       | Path within disk          |
